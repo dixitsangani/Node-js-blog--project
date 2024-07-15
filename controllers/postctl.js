@@ -8,6 +8,7 @@ module.exports.addpost =async(req,res)=>{
 }
 
 module.exports.insertpostdata =async (req,res) => {
+    try{
     var img = '';
 
     if (req.file) {
@@ -24,18 +25,28 @@ module.exports.insertpostdata =async (req,res) => {
 
     req.flash('success', 'add succsesfully');
     return res.redirect('back')
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }
 
 module.exports.view_post =async(req,res) =>{
+    try{
 
     let postdata = await post.find();
 
     return res.render("view_post",{
         postdata:postdata
     })
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }
 
 module.exports.deletepostRecord= async(req,res)=>{
+    try{
     let singleadmin = await post.findById(req.params.id);
 
     if (singleadmin) {
@@ -47,4 +58,8 @@ module.exports.deletepostRecord= async(req,res)=>{
     await post.findByIdAndDelete(req.params.id);
 
     return res.redirect('back'); 
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }

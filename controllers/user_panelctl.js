@@ -34,6 +34,7 @@ module.exports.home = async (req, res) => {
 }
 
 module.exports.blog_singel = async (req, res) => {
+    try{
 
     const commentcount = await comment.find({ ids: req.params.id }).countDocuments();
 
@@ -68,10 +69,14 @@ module.exports.blog_singel = async (req, res) => {
         resentpost: resentpost
 
     })
-
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }
 
 module.exports.usercomment = async (req, res) => {
+    try{
 
     var img = '';
 
@@ -89,24 +94,38 @@ module.exports.usercomment = async (req, res) => {
 
     req.flash('success', 'add succsesfully');
     return res.redirect('back')
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }
 
 
 module.exports.about = async (req, res) => {
+    try{
     let adminrecord = await admin.find()
     return res.render("user_panel/about", {
 
         adminrecord: adminrecord
 
     })
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }
 
 
 module.exports.workthreecolums = async (req, res) => {
+    try{
     const categorydata = await category.find()
     const subcategorydata = await subcategory.find()
     return res.render("user_panel/workthreecolums", {
         cut: categorydata,
         sub: subcategorydata
     })
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }

@@ -64,71 +64,83 @@ const addadmin = async (req, res) => {
 
 // login Form
 const loginform = async (req, res) => {
+    try{
+        if (req.cookies.catpchacode == req.body.catpchaCode) {
+            console.log("captcha matched");
+            req.flash('success', 'login succsesfully');
+            return res.redirect("/admin/dashboard");
+        }
+        else {
+            console.log("captcha not matched");
+            console.log("invalid catpcha");
+            return res.redirect("back");
+    
+        }
 
-    if (req.cookies.catpchacode == req.body.catpchaCode) {
-        console.log("captcha matched");
-        req.flash('success', 'login succsesfully');
-        return res.redirect("/admin/dashboard");
     }
-    else {
-        console.log("captcha not matched");
-        console.log("invalid catpcha");
-        return res.redirect("back");
-
+    catch(error){
+        consolelog(error)
     }
+  
 }
 
 
 
 // view Admin
 const viewadmin = async (req, res) => {
+    try{
 
-    var search = ""
-    if (req.query.search) {
-        search = req.query.search
-    }
-
-    var page = 0;
-    var par_page = 2;
-    if (req.query.page) {
-        page = req.query.page
-    }
-
-    const allrecord = await admin.find({
-        $or: [
-            { name: { $regex: search, $options: 'i' } },
-            { email: { $regex: search, $options: 'i' } }
-
-        ]
-    }).countDocuments();
-
-    var totalpage = Math.ceil(allrecord/par_page)
-
-
-
-
-    var viewdata = await admin.find({
-        $or: [
-            { name: { $regex: search, $options: 'i' } },
-            { email: { $regex: search, $options: 'i' } }
-
-        ]
-    })
+        
+        var search = ""
+        if (req.query.search) {
+            search = req.query.search
+        }
+        
+        var page = 0;
+        var par_page = 2;
+        if (req.query.page) {
+            page = req.query.page
+        }
+        
+        const allrecord = await admin.find({
+            $or: [
+                { name: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } }
+                
+            ]
+        }).countDocuments();
+        
+        var totalpage = Math.ceil(allrecord/par_page)
+        
+        
+        
+        
+        var viewdata = await admin.find({
+            $or: [
+                { name: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } }
+                
+            ]
+        })
         .skip(page * par_page)
         .limit(par_page)
-
-    return res.render('view_admin', {
-
-        viewdata: viewdata,
-        search: search,
-        totalpage:totalpage
-
-    });
-}
+        
+        return res.render('view_admin', {
+            
+            viewdata: viewdata,
+            search: search,
+            totalpage:totalpage
+            
+        });
+        }
+        catch(error){
+            consolelog(error)
+        }
+    }
 
 // insert
 const insertadmindata = async (req, res) => {
-
+try{
 
     console.log(req.file);
     console.log(req.body);
@@ -148,10 +160,15 @@ const insertadmindata = async (req, res) => {
 
     req.flash('success', 'add succsesfully');
     return res.redirect('back')
+}  catch(error){
+    consolelog(error)
+}
 }
 
 // delete
 const deleteAdminRecord = async (req, res) => {
+
+    try{
 
    
 
@@ -166,21 +183,30 @@ const deleteAdminRecord = async (req, res) => {
     await admin.findByIdAndDelete(req.params.id);
 
     return res.redirect('back');
+}  catch(error){
+    consolelog(error)
+}
 }
 
 // update admin
 const updateAdminRecord = async (req, res) => {
+    try{
 
 
     const upatedata = await admin.findById(req.query.id);
     return res.render("edit_admin", {
         upatedata
     });
+
+}  catch(error){
+    consolelog(error)
+}
 }
 
 // edit
 const editadmindata = async (req, res) => {
 
+    try{
 
     const editData = await admin.findById(req.body.id);
 
@@ -211,10 +237,15 @@ const editadmindata = async (req, res) => {
     await admin.findByIdAndUpdate(req.body.id, req.body);
     console.log(req.body.id, req.body)
     return res.redirect("/admin/viewadmin")
+
+}  catch(error){
+    consolelog(error)
+}
 }
 
 // profile
 const profail = async (req, res) => {
+    
 
     return res.render("profail")
 }
@@ -226,6 +257,8 @@ const chage_password = async (req, res) => {
 
 
 const changepass = async (req, res) => {
+
+    try{
     var dbpass = req.user.password
     if (dbpass == req.body.Currentpassword) {
         if (req.body.Currenttpassword != req.body.Newpassword) {
@@ -245,6 +278,10 @@ const changepass = async (req, res) => {
         return res.redirect('back');
     }
 
+    }  catch(error){
+        consolelog(error)
+    }
+
 }
 
 // -------------------------- forget ----------------------------- //
@@ -256,6 +293,8 @@ const forgetpasswords = async (req, res) => {
 
 // fo pass otp
 const fopass = async (req, res) => {
+
+    try{
     const checkEmail = await admin.findOne({ email: req.body.email })
     if (checkEmail) {
         const transporter = nodemailer.createTransport({
@@ -291,6 +330,10 @@ const fopass = async (req, res) => {
         console.log("invalid email")
         return res.redirect('back')
     }
+
+}  catch(error){
+    consolelog(error)
+}
 }
 
 // verify otp
@@ -305,6 +348,7 @@ const loginforgetpass = async (req, res) => {
 
 //otp verify
 const otpverify = async (req, res) => {
+    try{
     if (req.body.otp == req.cookies.otp) {
 
         res.clearCookie("otp")
@@ -315,11 +359,16 @@ const otpverify = async (req, res) => {
         console.log("otp not match")
         return res.redirect("back")
     }
+}  catch(error){
+    consolelog(error)
+}
 }
 
 
 // login pass
 const resetPass = async (req, res) => {
+
+    try{
     console.log(req.body);
     console.log(req.cookies.email);
 
@@ -350,11 +399,15 @@ const resetPass = async (req, res) => {
         console.log("invalid email")
         return res.redirect('back');
     }
-
+}  catch(error){
+    consolelog(error)
+}
 
 }
 
 const deactive = async (req,res) =>{
+
+    try{
     let deactivedata = await admin.findByIdAndUpdate(req.params.id,{status:false})
     if(deactivedata){
         req.flash('success', 'deactive succsesfully');
@@ -363,9 +416,14 @@ const deactive = async (req,res) =>{
     else{
         return res.redirect("back")
     }
+}  catch(error){
+    consolelog(error)
+}
 }
 
 const active = async (req,res) =>{
+
+    try{
     let activedata = await admin.findByIdAndUpdate(req.params.id,{status:true})
     if(activedata){
         req.flash('success', 'active succsesfully');
@@ -374,9 +432,15 @@ const active = async (req,res) =>{
     else{
         return res.redirect("back")
     }
+
+}  catch(error){
+    consolelog(error)
+}
 }
 
 const deleteallrecoard =async (req ,res) => {
+
+    try{
 
     const adminids = req.body.adminids;
 
@@ -390,6 +454,9 @@ const deleteallrecoard =async (req ,res) => {
     else{
         return res.redirect("back")
     }
+}  catch(error){
+    consolelog(error)
+}
  
 }
 

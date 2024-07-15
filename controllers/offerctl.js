@@ -8,6 +8,7 @@ module.exports.addoffer= async(req,res)=>{
 }
 
 module.exports.insertoffer = async (req,res)=>{
+    try{
    
     await offer.create(req.body);
 
@@ -15,14 +16,26 @@ module.exports.insertoffer = async (req,res)=>{
 
     return res.redirect('back')
 
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
+
 }
 
 module.exports.viewoffer = async (req,res ) =>{
+
+    try{
 
     let offerdata = await offer.find()
     return res.render("view_offer",{
         offerdata:offerdata
     })
+
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 
 }
 

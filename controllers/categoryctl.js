@@ -19,6 +19,7 @@ module.exports.insertcategorydata = async (req,res) => {
 }
 
 module.exports.view_category = async (req,res) => {
+    try{
 
     var search = ""
     if (req.query.search) {
@@ -60,6 +61,11 @@ module.exports.view_category = async (req,res) => {
 
 
     })
+
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }
 
 module.exports.deletecategoryRecord=async(req,res)=>{

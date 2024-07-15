@@ -9,6 +9,7 @@ module.exports.addslider = (req, res) => {
 }
 
 module.exports.insertsliderdata = async (req, res) => {
+    try{
 
     var img = '';
 
@@ -26,10 +27,15 @@ module.exports.insertsliderdata = async (req, res) => {
 
     req.flash('success', 'add succsesfully');
     return res.redirect('back')
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 
 }
 
 module.exports.viewslider = async (req, res) => {
+    try{
 
     var search = ""
     if (req.query.search) {
@@ -72,11 +78,14 @@ module.exports.viewslider = async (req, res) => {
 
 
     })
-
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }
 
 module.exports.deletesliderRecord = async (req, res) => {
-
+    try{
     let singleadmin = await slider.findById(req.params.id);
 
     if (singleadmin) {
@@ -88,10 +97,15 @@ module.exports.deletesliderRecord = async (req, res) => {
     await slider.findByIdAndDelete(req.params.id);
 
     return res.redirect('back');
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 
 }
 
 module.exports.deactive = async (req, res) => {
+    try{
     let deactivedata = await slider.findByIdAndUpdate(req.params.id, { status: false })
     if (deactivedata) {
         req.flash('success', 'deactive succsesfully');
@@ -100,9 +114,14 @@ module.exports.deactive = async (req, res) => {
     else {
         return res.redirect("back")
     }
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }
 
 module.exports.active = async (req, res) => {
+    try{
     let activedata = await slider.findByIdAndUpdate(req.params.id, { status: true })
     if (activedata) {
         req.flash('success', 'active succsesfully');
@@ -111,5 +130,9 @@ module.exports.active = async (req, res) => {
     else {
         return res.redirect("back")
     }
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }
 

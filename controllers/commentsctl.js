@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports.view_comment = async (req,res) =>{
+
+    try{
     var search="";
     if(req.query.search){
         search=req.query.search;
@@ -40,6 +42,10 @@ module.exports.view_comment = async (req,res) =>{
         totalPage : totalPage,
         currentPage :page
     });
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }
 
 module.exports.deletecommentRecord= async(req,res)=>{

@@ -8,6 +8,7 @@ module.exports.addphotos= async (req,res) => {
 }
 
 module.exports.insertphotos =async (req,res) => {
+    try{
    
     var img = '';
 
@@ -24,18 +25,29 @@ module.exports.insertphotos =async (req,res) => {
     req.flash('success', 'add succsesfully');
     return res.redirect('back')
 
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
+
 }
 
 module.exports.viewphotos = async (req,res) => {
+    try{
     let photosdata = await photos.find()
 
     return res.render("view_photos",{
         photosdata:photosdata
     })
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 
 }
 
 module.exports.deleteAdminRecord =async(req,res)=>{
+    try{
     
     let singleadmin = await photos.findById(req.params.id);
 
@@ -48,4 +60,8 @@ module.exports.deleteAdminRecord =async(req,res)=>{
     await photos.findByIdAndDelete(req.params.id);
 
     return res.redirect('back');
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }

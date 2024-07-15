@@ -9,19 +9,31 @@ module.exports.addothers = async (req, res) => {
 }
 
 module.exports.insertothers = async (req, res) => {
+    try{
 
     await others.create(req.body);
 
     req.flash('success', 'add succsesfully');
     return res.redirect('back')
 
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
+
 }
 
 module.exports.viewothers = async (req, res) => {
+
+    try{
     let othersdata = await others.find()
     return res.render("view_others", {
         othersdata: othersdata
     })
+}catch(error){
+    console.log(error);
+    return res.require('back')
+}
 }
 
 module.exports.deleteOtherRecord = async (req, res) => {
